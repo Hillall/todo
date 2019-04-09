@@ -9,8 +9,11 @@
     "test:e2e": "vue-cli-service test:e2e"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "core-js": "^2.6.5",
-    "vue": "^2.6.6"
+    "material-design-icons-iconfont": "^4.0.5",
+    "vue": "^2.6.6",
+    "vuetify": "^1.5.8"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",
@@ -20,6 +23,8 @@
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.8.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-vue": "^5.0.0",
     "lint-staged": "^8.1.4",
     "node-sass": "^4.9.0",
