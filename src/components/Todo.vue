@@ -4,10 +4,10 @@
 			<v-flex xs12 sm8 md6>
 				<v-card>
 					<v-card-title>
-						<v-text-field label="To do" v-model="newTasks" @keyup.enter="addTodo" required>
+						<v-text-field label="To do" v-model="newTask.description" @keyup.enter="addTodo" required>
 						</v-text-field>
 					</v-card-title>
-						<task-do @removeTodo="removeTodo"	:task="filteredTodos">
+						<task-do @removeTodo="removeTodo"	:task="filteredTodos" @changeTodo="changeTodo">
 						</task-do>
 					<v-card-actions>
 						<v-layout row wrap align-center justify-center>
@@ -43,7 +43,7 @@
 
 import TaskDo from './TaskDo.vue'
 import { save, getTodo } from '@/model/storage'
-
+import axios from 'axios'
 var filters = {
   all: function (todos) {
     return todos
@@ -66,8 +66,14 @@ export default {
   name: 'Todo',
   data: () => {
     return {
-      newTasks: '',
-      todos: [],
+      newTask: {
+        description: '',
+        complited: false,
+        userId: 1,
+        user: null,
+        timestamp: ''
+      },
+      todos: {},
       visibility: 'all'
     }
   },
@@ -75,8 +81,7 @@ export default {
     todos: {
       handler: function (todos) {
         save(todos)
-      },
-      deep: true
+      }
     }
   },
   created () {
@@ -94,19 +99,42 @@ export default {
   },
   methods: {
     addTodo: function () {
-      var value = this.newTasks && this.newTasks.trim()
-      if (!value) {
-        return
-      }
-      this.todos.push({
-        // id: todoStorage.uid++,
-        description: value,
-        complited: true
+      axios.post('https://localhost:44329/api/todo', {
+        complited: this.newTask.complited,
+        description: this.newTask.description,
+        userId: 1
       })
-      this.newTasks = ''
+        .then(response => {
+          this.todos.push(response.data)
+        })
+        .catch(e => {
+          console.log(e)
+        })
     },
-    removeTodo: function (todo) {
-      this.todos.splice(this.todos.indexOf(todo), 1)
+    removeTodo: function (id) {
+      axios.delete('https://localhost:44329/api/todo/' + id)
+        .then(response => {
+          this.todos.splice(this.todos.id, 1)
+        })
+        .catch(e => {
+          console.log(e)
+        })
+    },
+    changeTodo: function (id, task) {
+      axios.put('/api/todo/' + id, {
+        description: task.description,
+        complited: task.complited,
+        id: task.id,
+        userId: task.userId,
+        user: task.user,
+        timestamp: task.timestamp
+      })
+        .then(response => {
+          console.log(response)
+        })
+        .catch(e => {
+          console.log(e)
+        })
     }
   }
 }
